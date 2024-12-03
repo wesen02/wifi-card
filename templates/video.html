@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Video Ad</title>
+    <style>
+        /* Style for the popup */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 5%;
+            left: 50%;
+            /* transform: translateX(-50%); */
+            transform: translate(-50%, -50%);
+            /* background-color: #fff; */
+            padding: 20px;
+            /* border: 2px solid #333; */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* Style for the close button */
+        #popup .close-btn {
+            position: absolute;
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+            right: 20px;
+            /* Hide initially */
+        }
+
+        #popup .close-btn:hover {
+            background-color: darkred;
+        }
+
+        /* Overlay behind the popup */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Video style */
+        #popup video {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Image after close */
+        #imageContainer {
+            display: none;
+            /* Initially hidden */
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #imageContainer img {
+            display: none;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* Full viewport width */
+            height: 100vh;
+            /* Full viewport height */
+            object-fit: cover;
+            /* Ensures video maintains aspect ratio */
+            z-index: -1;
+            /* Keeps the video behind the content */
+        }
+
+        #popup img {
+            width: 100%;
+            height: auto;
+        }
+
+        #fallback-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures the image covers the entire screen without distortion */
+            z-index: -1;
+            /* Keeps the image behind other content */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Popup with video ad -->
+    <div id="popup">
+        <a id="videoLink" href="#" target="_blank">
+            <video id="background-video" autoplay muted playsinline>
+                <source id="videoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <img id="fallback-image" src="" alt="Background Image" style="display: none;">
+        </a>
+        <button id="closeBtn" class="close-btn" onclick="closePopup()">X</button>
+    </div>
+
+    <!-- Image Container (Hidden initially) -->
+    <div id="imageContainer">
+        <h2>Enjoy your wifi</h2>
+        <img src="/static/wifi/{{shop_code}}.png" alt="Wifi QR code">
+    </div>
+
+    <script>
+        const imageContainer = document.getElementById('imageContainer');
+        const video = document.getElementById('background-video'); // Get video element
+        const closeBtn = document.getElementById("closeBtn");
+        window.onload = function () {
+            setTimeout(function () {
+                document.getElementById("popup").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            }, 1000); // Popup appears after 1 second
+
+            // Show the close button after 5 seconds
+            setTimeout(function () {
+                document.getElementById("closeBtn").style.display = "block";
+            }, 5000); // Close button appears after 5 seconds
+        };
+
+        // Close the popup
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+            imageContainer.style.display = 'block';
+        }
+
+        // Close the popup when the video ends
+        video.onended = function () {
+            closePopup();
+        };
+
+        // Fetch video and link dynamically from Flask API
+        fetch('/get_video')
+            .then(response => response.json())
+            .then(data => {
+                const videoUrl = data.url;
+                // console.log(videoUrl);
+                const videoPlayer = document.getElementById('background-video');
+                const videoSource = document.getElementById('videoSource');
+                const videoLink = document.getElementById('videoLink');
+                const imageSource = document.getElementById('fallback-image');
+
+                // Check if the file extension is not '.mp4'
+                if (videoUrl && videoUrl.endsWith('.mp4')) {
+                    videoSource.src = videoUrl;
+                    videoPlayer.load();
+                    // Hide the fallback image if video is supported
+                    document.getElementById('fallback-image').style.display = 'none';
+                } else {
+                    // If the file is not a video (or not an mp4 file), show an image
+                    videoPlayer.style.display = 'none'; // Hide video player
+                    imageSource.src = videoUrl;
+                    document.getElementById('fallback-image').style.display = 'block'; // Show fallback image
+                }
+                videoLink.href = data.link;
+            })
+            .catch(error => console.error('Error fetching video data:', error));
+    </script>
+
+</body>
+
+</html>
