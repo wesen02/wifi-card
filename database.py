@@ -112,6 +112,7 @@ def ads_db(form_data, ad_video):
     end_date = form_data["end_date"]
     ad_category = form_data["ad_category"]
     notes = form_data["notes"]
+    url_link = form_data["url_link"]
 
     ad_video = os.path.join(os.getcwd(), ad_video)
 
@@ -143,6 +144,7 @@ def ads_db(form_data, ad_video):
             ad_category TEXT NOT NULL,
             notes TEXT,
             ad_video TEXT NOT NULL,
+            url_link TEXT NOT NULL, 
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         '''
@@ -156,12 +158,12 @@ def ads_db(form_data, ad_video):
         print("Table created successfully (if it didn't exist already).")
 
         insert_query = """
-        INSERT INTO ad_campaigns (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        INSERT INTO ad_campaigns (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video, url_link) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
         # Execute the query
-        cursor.execute(insert_query, (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video))
+        cursor.execute(insert_query, (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video, url_link))
         
         # Commit the transaction
         conn.commit()
