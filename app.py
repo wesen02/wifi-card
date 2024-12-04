@@ -65,8 +65,6 @@ def upload_file():
     # Extract other form data (excluding the file)
     form_data = request.form.to_dict()  # This will contain the form data except the file
 
-    print(form_data)
-
     # Pass form data and media path to your database function or logic
     ads_db(form_data, media_path)
 
