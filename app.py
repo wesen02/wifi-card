@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_file, redirect,
 import qrcode
 from qrcode_generator import qr_shop
 import os
-from database import shop_database, ads_db
+from database import shop_database, ads_db, video_database
 import random
 
 app = Flask(__name__)
@@ -89,9 +89,12 @@ media = [
 @app.route('/get_video', methods=['GET'])
 def get_video():
     # Decide which video to serve
-    selected_video = random.choice(media)  # Replace with your logic
-    print(selected_video)
-    return jsonify(selected_video)
+    video = video_database()
+    # selected_video = random.choice(media)  # Replace with your logic
+    # print(selected_video)
+    # return jsonify(selected_video)
+    print(video)
+    return jsonify(video)
 
 @app.route('/wifi_shop/<shop_code>')
 def wifi_shop(shop_code):

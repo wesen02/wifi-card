@@ -169,8 +169,8 @@
       fetch('/get_video')
         .then((response) => response.json())
         .then((data) => {
-          const videoUrl = data.url;
-          // console.log(videoUrl);
+          const videoUrl = data.media_path;
+          console.log(videoUrl);
           const videoPlayer = document.getElementById('background-video');
           const videoSource = document.getElementById('videoSource');
           const videoLink = document.getElementById('videoLink');
@@ -188,7 +188,7 @@
             imageSource.src = videoUrl;
             document.getElementById('fallback-image').style.display = 'block'; // Show fallback image
           }
-          videoLink.href = data.link;
+          videoLink.href = data.url_link;
         })
         .catch((error) => console.error('Error fetching video data:', error));
     </script>

@@ -184,4 +184,55 @@ def ads_db(form_data, ad_video):
         if 'conn' in locals() and conn:
             conn.close()
             print("Database connection closed.")
-    return "hello"
+
+def video_database():
+    try:
+        # Attempting to connect to the PostgreSQL database
+        conn = psycopg2.connect(database=DB_NAME,
+                                user=DB_USER,
+                                password=DB_PASS,
+                                host=DB_HOST,
+                                port=DB_PORT)
+        print("Database connected successfully")
+        
+        # Create a cursor object to interact with the database
+        cursor = conn.cursor()
+
+        search_query = """
+        SELECT * FROM ad_campaigns
+        """
+        cursor.execute(search_query)
+
+        ad_data = cursor.fetchall()
+
+        data_json = {}
+
+        for data in ad_data:
+            print(data)
+            media_path = data[9]
+            url_link = data[10]
+            media_path = "/static/" + media_path.split("static")[-1]
+            data_json = {
+                "media_path": media_path,
+                "url_link": url_link
+            }
+
+        # Commit the transaction
+        conn.close()
+
+        return data_json
+
+    except OperationalError as e:
+        # Handle specific operational errors (e.g., connection issues)
+        print(f"OperationalError: {e}")
+    except DatabaseError as e:
+        # Handle database-related errors (e.g., invalid credentials or database not found)
+        print(f"DatabaseError: {e}")
+    except Exception as e:
+        # Catch any other exceptions
+        print(f"An unexpected error occurred: {e}")
+    finally:
+        # Ensure the connection is closed when done
+        if 'conn' in locals() and conn:
+            conn.close()
+            print("Database connection closed.")
