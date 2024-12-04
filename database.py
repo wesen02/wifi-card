@@ -2,7 +2,6 @@ import psycopg2
 from psycopg2 import OperationalError, DatabaseError
 import hashlib
 import os
-from rename import rename_file
 
 DB_NAME = "wifi_card"
 DB_USER = "admin"
@@ -26,8 +25,6 @@ def shop_database(shop_info):
         security_type = shop_info["security_type"]
         location = shop_info["location"]
         shop_code = hash_text(shop_name + wifi_name)[:6]
-
-        print(shop_code)
 
         try:
             # Attempting to connect to the PostgreSQL database

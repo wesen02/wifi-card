@@ -35,9 +35,9 @@ def submit():
     else:
         return jsonify({"error": "File not found"}), 404
 
-@app.route('/asset/qr_code/shop/<filename>')
-def serve_qr(filename):
-    return send_file(f'asset/qr_code/shop/{filename}', as_attachment=True)
+# @app.route('/asset/qr_code/shop/<filename>')
+# def serve_qr(filename):
+#     return send_file(f'asset/qr_code/shop/{filename}', as_attachment=True)
 
 @app.route('/upload_ads')
 def upload_ads():
@@ -95,7 +95,8 @@ def get_video():
 
 @app.route('/wifi_shop/<shop_code>')
 def wifi_shop(shop_code):
-    return render_template('video.html', shop_code=shop_code)
+    wifi_qr = f"/static/wifi/{shop_code}.png"
+    return render_template('video.html', wifi_qr=wifi_qr)
 
 
 if __name__ == '__main__':
