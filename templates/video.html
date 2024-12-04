@@ -170,7 +170,6 @@
         .then((response) => response.json())
         .then((data) => {
           const videoUrl = data.media_path;
-          console.log(videoUrl);
           const videoPlayer = document.getElementById('background-video');
           const videoSource = document.getElementById('videoSource');
           const videoLink = document.getElementById('videoLink');
