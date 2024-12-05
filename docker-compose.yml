@@ -11,6 +11,15 @@ services:
     networks:
       - database_default
 
+  media_detect_app:
+    build:
+      context: media_converter
+    volumes:
+      - ./media_converter:/app
+      - ./app/static:/app/static
+    networks:
+      - database_default
+
   nginx:
     image: nginx:latest
     volumes:
@@ -23,13 +32,13 @@ services:
     networks:
       - database_default
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email admin@wecap.studio -d wecap.studio --agree-tos
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   command: certonly --webroot -w /var/www/certbot --force-renewal --email admin@wecap.studio -d wecap.studio --agree-tos
 
 networks:
   database_default:

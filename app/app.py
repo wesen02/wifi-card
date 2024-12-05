@@ -83,7 +83,22 @@ def get_video():
 @app.route('/wifi_shop/<shop_code>')
 def wifi_shop(shop_code):
     wifi_qr = f"/static/assets/wifi_qr/{shop_code}.png"
-    return render_template('video.html', wifi_qr=wifi_qr)
+
+    # Detect the device type based on User-Agent
+    user_agent = request.headers.get('User-Agent', '').lower()
+    
+    if "iphone" in user_agent:
+        device = "iPhone"
+    elif "android" in user_agent:
+        device = "Android Phone"
+    elif "windows" in user_agent:
+        device = "Windows Device"
+    elif "mac" in user_agent:
+        device = "Mac"
+    else:
+        device = "Unknown Device"
+
+    return render_template('video.html', wifi_qr=wifi_qr, device=device)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

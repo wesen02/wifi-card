@@ -226,7 +226,9 @@ def video_database():
             cursor.execute(update_query, (exposure, ad_id))
             conn.commit()
 
-            media_path = "/static/" + media_path.split("static")[-1]
+            # media_path = os.path.join("/static", media_path.split("static")[-1])
+
+            media_path = "/static" + media_path.split("static")[-1]
             print(media_path)
             data_json = {
                 "media_path": media_path,

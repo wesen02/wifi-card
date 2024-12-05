@@ -5,7 +5,7 @@ import os
 DB_NAME = "wifi_card"
 DB_USER = "admin"
 DB_PASS = "admin"
-DB_HOST = "localhost"
+DB_HOST = "db"
 DB_PORT = "5432"
 
 def rename_file(old_path, new_filename):
@@ -57,9 +57,9 @@ def read_ads_db():
 
         # Iterate through the rows and print them
         for row in rows:
-            video_path = row[9]
+            video_path = row[8]
             company_name = row[1]
-            start_date = row[5]
+            start_date = row[4]
             campaign_id = row[0]
 
             directory = os.path.dirname(video_path)
