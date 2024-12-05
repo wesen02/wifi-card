@@ -35,10 +35,6 @@ def submit():
     else:
         return jsonify({"error": "File not found"}), 404
 
-# @app.route('/asset/qr_code/shop/<filename>')
-# def serve_qr(filename):
-#     return send_file(f'asset/qr_code/shop/{filename}', as_attachment=True)
-
 @app.route('/upload_ads')
 def upload_ads():
     return render_template('upload_ads.html')
@@ -80,27 +76,16 @@ def upload_file():
 def popup():
     return render_template('video.html')
 
-# Videos with associated links
-media = [
-    {"id": 1, "url": "/static/ads_video/output.mp4", "link": "http://wecap.studio"},
-    {"id": 2, "url": "/static/ads_video/86ed71.png", "link": "http://wecap.studio"}
-]
-
 @app.route('/get_video', methods=['GET'])
 def get_video():
     # Decide which video to serve
     video = video_database()
-    # selected_video = random.choice(media)  # Replace with your logic
-    # print(selected_video)
-    # return jsonify(selected_video)
-    print(video)
     return jsonify(video)
 
 @app.route('/wifi_shop/<shop_code>')
 def wifi_shop(shop_code):
     wifi_qr = f"/static/wifi/{shop_code}.png"
     return render_template('video.html', wifi_qr=wifi_qr)
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

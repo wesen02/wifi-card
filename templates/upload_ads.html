@@ -60,20 +60,6 @@
           />
         </div>
 
-        <!-- Target Audience -->
-        <div class="mb-3">
-          <label for="target_audience" class="form-label"
-            >Target Audience</label
-          >
-          <textarea
-            id="target_audience"
-            name="target_audience"
-            class="form-control"
-            placeholder="Describe your target audience"
-            rows="3"
-          ></textarea>
-        </div>
-
         <div class="mb-3">
           <label for="url_link" class="form-label">URL Link</label>
           <input
@@ -99,15 +85,6 @@
                 required
               />
             </div>
-            <!-- <div class="col">
-              <input
-                type="date"
-                id="end_date"
-                name="end_date"
-                class="form-control"
-                required
-              />
-            </div> -->
           </div>
         </div>
         <div class="mb-3">
@@ -152,11 +129,6 @@
           ></textarea>
         </div>
 
-        <!-- Video Upload -->
-        <!-- <div class="mb-3">
-        <label for="video_upload" class="form-label">Upload Advertisement Video</label>
-        <input type="file" id="video" name="video" accept="video/*" class="form-control" required /><br /><br />
-      </div> -->
         <!-- Media Upload -->
         <div class="mb-3">
           <label for="media_upload" class="form-label"
@@ -198,26 +170,6 @@
           .join('');
         return hashHex + fileName.slice(fileName.lastIndexOf('.')); // Add original file extension
       }
-
-      document
-        .getElementById('video')
-        .addEventListener('change', async function (event) {
-          const fileInput = event.target;
-          const file = fileInput.files[0];
-          if (file) {
-            const hashedFileName = await hashFileName(file);
-            console.log('Hashed File Name:', hashedFileName);
-
-            // Optionally update the file input or form
-            // You can send the hash along with the file data in the form submission
-            const formData = new FormData();
-            formData.append('fileName', hashedFileName);
-            formData.append('file', file);
-
-            // Simulate form submission
-            // fetch('/upload', { method: 'POST', body: formData });
-          }
-        });
     </script>
   </body>
 </html>

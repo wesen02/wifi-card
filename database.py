@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import OperationalError, DatabaseError
 import hashlib
 import os
+import random
 
 DB_NAME = "wifi_card"
 DB_USER = "admin"
@@ -104,15 +105,17 @@ def shop_database(shop_info):
 
 def ads_db(form_data, ad_video):
 
+    print(form_data)
+
     company_name = form_data["company_name"]
     budget = form_data["budget"]
     campaign_title = form_data["campaign_title"]
-    target_audience = form_data["target_audience"]
     start_date = form_data["start_date"]
-    end_date = form_data["end_date"]
+    duration = form_data["duration"]
     ad_category = form_data["ad_category"]
     notes = form_data["notes"]
     url_link = form_data["url_link"]
+    exposure = 0
 
     ad_video = os.path.join(os.getcwd(), ad_video)
 
@@ -138,13 +141,13 @@ def ads_db(form_data, ad_video):
             company_name TEXT NOT NULL,
             budget NUMERIC(10, 2) NOT NULL,
             campaign_title TEXT NOT NULL,
-            target_audience TEXT NOT NULL,
             start_date DATE NOT NULL,
-            end_date DATE NOT NULL,
+            duration INT NOT NULL,
             ad_category TEXT NOT NULL,
             notes TEXT,
             ad_video TEXT NOT NULL,
             url_link TEXT NOT NULL, 
+            exposure INT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         '''
@@ -158,12 +161,12 @@ def ads_db(form_data, ad_video):
         print("Table created successfully (if it didn't exist already).")
 
         insert_query = """
-        INSERT INTO ad_campaigns (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video, url_link) 
+        INSERT INTO ad_campaigns (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure) 
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
         # Execute the query
-        cursor.execute(insert_query, (company_name, budget, campaign_title, target_audience, start_date, end_date, ad_category, notes, ad_video, url_link))
+        cursor.execute(insert_query, (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure))
         
         # Commit the transaction
         conn.commit()
@@ -207,20 +210,35 @@ def video_database():
 
         data_json = {}
 
-        for data in ad_data:
-            print(data)
-            media_path = data[9]
-            url_link = data[10]
+        if ad_data:
+            random_ad = random.choice(ad_data)
+            ad_id = random_ad[0]
+            exposure = random_ad[-2] + 1
+            url_link = random_ad[-3]
+            media_path = random_ad[-4]
+
+            update_query = """
+                UPDATE ad_campaigns
+                SET exposure = %s
+                WHERE id = %s
+            """
+
+            cursor.execute(update_query, (exposure, ad_id))
+            conn.commit()
+
             media_path = "/static/" + media_path.split("static")[-1]
+            print(media_path)
             data_json = {
                 "media_path": media_path,
                 "url_link": url_link
             }
+            print(data_json)
+            conn.close()
 
-        # Commit the transaction
-        conn.close()
+            return data_json
 
-        return data_json
+        else:
+            return "No Ads"
 
     except OperationalError as e:
         # Handle specific operational errors (e.g., connection issues)
