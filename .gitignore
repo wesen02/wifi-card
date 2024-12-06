@@ -81,6 +81,3 @@ yarn-error.log*
 *~
 *.bak
 *.tmp
-
-# Custom Project-Specific Folders
-your-custom-folder/
