@@ -8,6 +8,46 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .slider-form-range {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 5px;
+        outline: none;
+        transition: background 0.3s ease-in-out;
+      }
+
+      .slider-form-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .slider-form-range::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .slider-form-range::-ms-thumb {
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
+    </style>
   </head>
 
   <body>
@@ -29,20 +69,6 @@
             name="company_name"
             class="form-control"
             placeholder="Enter your company name"
-            required
-          />
-        </div>
-
-        <!-- Budget -->
-        <div class="mb-3">
-          <label for="budget" class="form-label">Budget (USD)</label>
-          <input
-            type="number"
-            id="budget"
-            name="budget"
-            class="form-control"
-            placeholder="Enter your budget"
-            min="1"
             required
           />
         </div>
@@ -87,17 +113,35 @@
             </div>
           </div>
         </div>
+
+        <!-- Budget -->
+        <div class="mb-3">
+          <label for="budget" class="form-label">Budget (USD)</label>
+          <input
+            type="number"
+            id="budget"
+            name="budget"
+            class="form-control"
+            placeholder="Enter your budget"
+            min="1"
+            required
+          />
+        </div>
+
         <div class="mb-3">
           <label for="duration" class="form-label">Duration (in days)</label>
           <input
-            type="number"
+            type="range"
             id="duration"
             name="duration"
-            class="form-control"
-            placeholder="Enter the duration in days"
-            required
+            class="slider-form-range"
             min="1"
+            max="30"
+            step="1"
+            value="1"
+            oninput="updateSlider(this)"
           />
+          <output id="slider-value">1</output>
         </div>
 
         <!-- Ad Category -->
@@ -170,6 +214,24 @@
           .join('');
         return hashHex + fileName.slice(fileName.lastIndexOf('.')); // Add original file extension
       }
+
+      function updateSlider(slider) {
+        // Calculate the percentage of the slider's current position
+        const percentage =
+          ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+        // Update the slider's background to reflect the progress
+        slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
+
+        // Update the displayed value
+        document.getElementById('slider-value').textContent = slider.value;
+      }
+
+      // Initialize the slider bar background on page load
+      document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('duration');
+        updateSlider(slider);
+      });
     </script>
   </body>
 </html>
