@@ -25,7 +25,9 @@ inotifywait -m -e create --format "%f" "$WATCH_DIR" | while read -r NEW_FILE; do
 
         # Define paths
         FILE_PATH="${WATCH_DIR%/}/$NEW_FILE"
-        TEMP_FILE="${FILE_PATH%.*}_temp.${FILE_EXTENSION}"
+        echo "slkdjfalksjdfj $FILE_PATH"
+        TEMP_FILE="${FILE_PATH%.*}_temp.mp4"
+        # FINAL_FILE="${FILE_PATH%.*}.mp4"
 
         echo "Processing file: $FILE_PATH"
 

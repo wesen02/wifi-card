@@ -1,0 +1,86 @@
+# General
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+*.DS_Store
+Thumbs.db
+
+# Operating System Files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.pyo
+*.pyd
+
+# Environment Variables and Virtual Environments
+.env
+.venv/
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Compiled files
+*.class
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dll
+
+# IDE Specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Images and Videos (optional)
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.gif
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Backup Files
+*~
+*.bak
+*.tmp
+
+# Custom Project-Specific Folders
+your-custom-folder/
