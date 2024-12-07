@@ -3,7 +3,7 @@ import psycopg2
 DB_NAME = "wifi_card"
 DB_USER = "admin"
 DB_PASS = "admin"
-DB_HOST = "localhost"
+DB_HOST = "db"
 DB_PORT = "5432"
 
 def connect_db():
@@ -23,6 +23,8 @@ def connect_db():
     return conn, cursor
 
 def read_ads_db():
+    conn = None
+    cursor = None
     try:
         conn, cursor = connect_db()
 
@@ -43,13 +45,14 @@ def read_ads_db():
         print(f"Error connecting to database: {e}")
     finally:
         # Close the cursor and connection
-        if cursor:
+        if cursor is not None:
             cursor.close()
-        if conn:
+        if conn is not None:
             conn.close()
 
 def update_ads(data_id):
-    # done_ads()
+    conn = None
+    cursor = None
     try:
         conn, cursor = connect_db()
 
@@ -101,8 +104,8 @@ def update_ads(data_id):
         print(f"Error connecting to database: {e}")
     finally:
         # Close the cursor and connection
-        if cursor:
+        if cursor is not None:
             cursor.close()
-        if conn:
+        if conn is not None:
             conn.close()
     

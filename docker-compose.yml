@@ -20,6 +20,15 @@ services:
     networks:
       - database_default
 
+  update_database:
+    build:
+      context: update_database
+    volumes:
+      - ./update_database/main.py:/app/main.py
+      - ./media_converter:/app/media_converter
+    networks:
+      - database_default
+
   nginx:
     image: nginx:latest
     volumes:

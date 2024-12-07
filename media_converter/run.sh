@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directory to monitor
-WATCH_DIR="./static/assets/ads_media/"
+WATCH_DIR="/app/static/assets/ads_media/"
 
 # Check if inotifywait is installed
 if ! command -v inotifywait &>/dev/null; then
