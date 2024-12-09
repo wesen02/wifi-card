@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
 from qrcode_generator import qr_shop
 import os
-from database import shop_database, ads_db, video_database
+from database import shop_database, ads_db, read_ads_db, ad_info
+from exposure import exposure_cal
 
 app = Flask(__name__)
 
@@ -77,8 +78,12 @@ def popup():
 @app.route('/get_video', methods=['GET'])
 def get_video():
     # Decide which video to serve
-    video = video_database()
-    return jsonify(video)
+    # video = video_database()
+    all_ads = read_ads_db()
+    selected_ad = exposure_cal(all_ads)
+    media = ad_info(selected_ad)
+
+    return jsonify(media)
 
 @app.route('/wifi_shop/<shop_code>')
 def wifi_shop(shop_code):

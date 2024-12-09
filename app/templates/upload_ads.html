@@ -115,7 +115,7 @@
         </div>
 
         <!-- Budget -->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="budget" class="form-label">Budget (USD)</label>
           <input
             type="number"
@@ -126,6 +126,22 @@
             min="1"
             required
           />
+        </div> -->
+
+        <div class="mb-3">
+          <label for="budget" class="form-label">Daily Budget</label>
+          <input
+            type="range"
+            id="budget"
+            name="budget"
+            class="slider-form-range"
+            min="8"
+            max="100"
+            step="4"
+            value="8"
+            oninput="updateBudgetSlider(this)"
+          />
+          <output id="slider-value-budget">8</output>
         </div>
 
         <div class="mb-3">
@@ -139,9 +155,9 @@
             max="30"
             step="1"
             value="1"
-            oninput="updateSlider(this)"
+            oninput="updateDurationSlider(this)"
           />
-          <output id="slider-value">1</output>
+          <output id="slider-value-duration">1</output>
         </div>
 
         <!-- Ad Category -->
@@ -215,7 +231,7 @@
         return hashHex + fileName.slice(fileName.lastIndexOf('.')); // Add original file extension
       }
 
-      function updateSlider(slider) {
+      function updateBudgetSlider(slider) {
         // Calculate the percentage of the slider's current position
         const percentage =
           ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
@@ -224,13 +240,32 @@
         slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
 
         // Update the displayed value
-        document.getElementById('slider-value').textContent = slider.value;
+        document.getElementById('slider-value-budget').textContent =
+          slider.value;
+      }
+
+      function updateDurationSlider(slider) {
+        // Calculate the percentage of the slider's current position
+        const percentage =
+          ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+        // Update the slider's background to reflect the progress
+        slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
+
+        // Update the displayed value
+        document.getElementById('slider-value-duration').textContent =
+          slider.value;
       }
 
       // Initialize the slider bar background on page load
       document.addEventListener('DOMContentLoaded', () => {
         const slider = document.getElementById('duration');
-        updateSlider(slider);
+        updateDurationSlider(slider);
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('budget');
+        updateBudgetSlider(slider);
       });
     </script>
   </body>

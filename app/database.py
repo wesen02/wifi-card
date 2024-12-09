@@ -15,6 +15,50 @@ def hash_text(text):
     hashed = hashlib.sha256(text.encode('utf-8')).hexdigest()
     return hashed
 
+def connect_db():
+    # Connect to the database
+    conn = psycopg2.connect(
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+    print("Database connected successfully")
+    
+    # Create a cursor object
+    cursor = conn.cursor()
+
+    return conn, cursor
+
+def read_ads_db():
+    conn = None
+    cursor = None
+    try:
+        conn, cursor = connect_db()
+
+        # Define your SQL query
+        query = "SELECT * FROM ad_campaigns"
+
+        # Execute the query
+        cursor.execute(query)
+
+        # Fetch all rows from the result
+        rows = cursor.fetchall()
+
+        conn.commit()
+
+        return rows
+
+    except psycopg2.Error as e:
+        print(f"Error connecting to database: {e}")
+    finally:
+        # Close the cursor and connection
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
+
 def shop_database(shop_info):
     if shop_info is None:
         return "No data found"
@@ -28,16 +72,7 @@ def shop_database(shop_info):
         shop_code = hash_text(shop_name + wifi_name)[:6]
 
         try:
-            # Attempting to connect to the PostgreSQL database
-            conn = psycopg2.connect(database=DB_NAME,
-                                    user=DB_USER,
-                                    password=DB_PASS,
-                                    host=DB_HOST,
-                                    port=DB_PORT)
-            print("Database connected successfully")
-            
-            # Create a cursor object to interact with the database
-            cursor = conn.cursor()
+            conn, cursor = connect_db()
 
             # SQL query to create a table if it doesn't exist
             create_table_query = '''
@@ -104,9 +139,7 @@ def shop_database(shop_info):
                 print("Database connection closed.")
 
 def ads_db(form_data, ad_video):
-
     print(form_data)
-
     company_name = form_data["company_name"]
     budget = form_data["budget"]
     campaign_title = form_data["campaign_title"]
@@ -123,16 +156,7 @@ def ads_db(form_data, ad_video):
     # rename_file(video_path, video_name_hash)
 
     try:
-        # Attempting to connect to the PostgreSQL database
-        conn = psycopg2.connect(database=DB_NAME,
-                                user=DB_USER,
-                                password=DB_PASS,
-                                host=DB_HOST,
-                                port=DB_PORT)
-        print("Database connected successfully")
-        
-        # Create a cursor object to interact with the database
-        cursor = conn.cursor()
+        conn, cursor = connect_db()
 
         # SQL query to create a table if it doesn't exist
         create_table_query = '''
@@ -188,34 +212,31 @@ def ads_db(form_data, ad_video):
             conn.close()
             print("Database connection closed.")
 
-def video_database():
+def ad_info(selected_ad):
     try:
-        # Attempting to connect to the PostgreSQL database
-        conn = psycopg2.connect(database=DB_NAME,
-                                user=DB_USER,
-                                password=DB_PASS,
-                                host=DB_HOST,
-                                port=DB_PORT)
-        print("Database connected successfully")
-        
-        # Create a cursor object to interact with the database
-        cursor = conn.cursor()
+        conn, cursor = connect_db()
 
         search_query = """
-        SELECT * FROM ad_campaigns
+        SELECT * FROM ad_campaigns WHERE id = %s
         """
-        cursor.execute(search_query)
 
-        ad_data = cursor.fetchall()
+        cursor.execute(search_query, (selected_ad,))
+        conn.commit()
 
-        data_json = {}
+        ad_data = cursor.fetchone()
+
+        url_link = ad_data[-3]
+        media_path = ad_data[-4]
+
+        media_path = "/static" + media_path.split("static")[-1]
+
+        data_json = {
+            "media_path": media_path,
+            "url_link": url_link
+        }
 
         if ad_data:
-            random_ad = random.choice(ad_data)
-            ad_id = random_ad[0]
-            exposure = random_ad[-2] + 1
-            url_link = random_ad[-3]
-            media_path = random_ad[-4]
+            exposure = ad_data[-2] + 1
 
             update_query = """
                 UPDATE ad_campaigns
@@ -223,24 +244,12 @@ def video_database():
                 WHERE id = %s
             """
 
-            cursor.execute(update_query, (exposure, ad_id))
+            cursor.execute(update_query, (exposure, selected_ad))
             conn.commit()
 
-            # media_path = os.path.join("/static", media_path.split("static")[-1])
+        conn.close()
 
-            media_path = "/static" + media_path.split("static")[-1]
-            print(media_path)
-            data_json = {
-                "media_path": media_path,
-                "url_link": url_link
-            }
-            print(data_json)
-            conn.close()
-
-            return data_json
-
-        else:
-            return "No Ads"
+        return data_json
 
     except OperationalError as e:
         # Handle specific operational errors (e.g., connection issues)

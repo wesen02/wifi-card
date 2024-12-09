@@ -9,13 +9,14 @@
       #popup {
         display: none;
         position: fixed;
-        top: 5%;
+        top: 50%;
         left: 50%;
         /* transform: translateX(-50%); */
         transform: translate(-50%, -50%);
         /* background-color: #fff; */
-        padding: 20px;
+        /* padding: 20px; */
         /* border: 2px solid #333; */
+        height: 100%;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         z-index: 1000;
         width: 80%;
@@ -33,6 +34,7 @@
         cursor: pointer;
         border-radius: 5px;
         display: none;
+        top: 20px;
         right: 20px;
         /* Hide initially */
       }
@@ -74,7 +76,8 @@
       }
 
       #background-video {
-        position: fixed;
+        position: absolute;
+        /* top: 10%; */
         top: 0;
         left: 0;
         width: 100vw;
@@ -103,6 +106,35 @@
         z-index: -1;
         /* Keeps the image behind other content */
       }
+
+      #unmute-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+
+        /* Appearance */
+        width: 45px;
+        height: 45px;
+        background: rgba(0, 0, 0, 0.5); /* Black with 50% transparency */
+        border: none; /* Remove outline/border */
+        border-radius: 50%; /* Make it circular */
+        color: white; /* Icon color */
+        font-size: 24px; /* Icon size */
+        cursor: pointer; /* Pointer on hover */
+
+        /* Center the icon */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #unmute-btn:focus {
+        outline: none; /* Remove focus outline */
+      }
+
+      #unmute-btn:hover {
+        background: rgba(0, 0, 0, 0.7); /* Darker on hover */
+      }
     </style>
   </head>
 
@@ -124,6 +156,7 @@
           style="display: none"
         />
       </a>
+      <button id="unmute-btn">🔇</button>
       <button id="closeBtn" class="close-btn" onclick="closePopup()">X</button>
     </div>
 
@@ -155,6 +188,10 @@
 
       // Close the popup
       function closePopup() {
+        const video = document.getElementById('background-video');
+        video.pause(); // Pause the video
+        video.currentTime = 0; // Reset to the beginning
+
         document.getElementById('popup').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         imageContainer.style.display = 'block';
@@ -169,6 +206,7 @@
       fetch('/get_video')
         .then((response) => response.json())
         .then((data) => {
+          console.log(data);
           const videoUrl = data.media_path;
           const videoPlayer = document.getElementById('background-video');
           const videoSource = document.getElementById('videoSource');
@@ -191,6 +229,16 @@
           videoLink.href = data.url_link;
         })
         .catch((error) => console.error('Error fetching video data:', error));
+
+      document.getElementById('unmute-btn').addEventListener('click', () => {
+        const video = document.getElementById('background-video');
+        video.muted = !video.muted; // Toggle mute state
+
+        // Update button text
+        document.getElementById('unmute-btn').textContent = video.muted
+          ? '🔇'
+          : '🔊';
+      });
     </script>
   </body>
 </html>

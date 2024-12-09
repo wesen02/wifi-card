@@ -11,7 +11,7 @@ RUN pip install -r requirements.txt
 RUN chmod +x /app/main.py
 
 # Add the cron job
-RUN echo "00 00 * * * /usr/local/bin/python3 /app/main.py >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
+RUN echo "59 23 * * * /usr/local/bin/python3 /app/main.py >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron-job
 
 # Set the correct permissions for the cron job file
 RUN chmod 0644 /etc/cron.d/my-cron-job
