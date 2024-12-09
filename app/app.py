@@ -24,7 +24,7 @@ def insert_shop():
 def submit():
     data = request.get_json()
 
-    database_update = shop_database(data)
+    _ = shop_database(data)
 
     qr_dir = qr_shop(data)
     qr_name = qr_dir.split("/")[-1]
