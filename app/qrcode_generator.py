@@ -12,7 +12,7 @@ def qr_shop(shop_info):
 
     wifi = f"WIFI:S:{wifi_name};T:{wifi_sec};P:{wifi_password};"
 
-    wifi_link = f"https://0e58-202-185-85-132.ngrok-free.app/wifi_shop/{shop_code}"
+    wifi_link = f"https://weconnect.city/scan?qr={shop_code}"
 
     wifi_qr = qrcode.make(wifi)
     wifi_dir = f"./static/assets/wifi_qr/{shop_code}.png"

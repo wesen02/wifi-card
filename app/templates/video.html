@@ -206,7 +206,7 @@
       fetch('/get_video')
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           const videoUrl = data.media_path;
           const videoPlayer = document.getElementById('background-video');
           const videoSource = document.getElementById('videoSource');

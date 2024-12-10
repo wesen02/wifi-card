@@ -28,7 +28,7 @@ def submit():
 
     qr_dir = qr_shop(data)
     qr_name = qr_dir.split("/")[-1]
-    
+
     if os.path.exists(qr_dir):
         return jsonify({"qrFilePath": qr_name}), 200  # Return the file name/path as JSON
     else:
@@ -85,13 +85,18 @@ def get_video():
 
     return jsonify(media)
 
-@app.route('/wifi_shop/<shop_code>')
-def wifi_shop(shop_code):
+@app.route('/scan')
+def wifi_shop():
+    # Extract the shop code from the query parameter
+    shop_code = request.args.get('qr')
+    if not shop_code:
+        return "Shop code is missing", 400
+
+    # Generate the path to the Wi-Fi QR code image
     wifi_qr = f"/static/assets/wifi_qr/{shop_code}.png"
 
-    # Detect the device type based on User-Agent
+    # Detect the device type based on the User-Agent header
     user_agent = request.headers.get('User-Agent', '').lower()
-    
     if "iphone" in user_agent:
         device = "iPhone"
     elif "android" in user_agent:
@@ -103,6 +108,7 @@ def wifi_shop(shop_code):
     else:
         device = "Unknown Device"
 
+    # Render the HTML template
     return render_template('video.html', wifi_qr=wifi_qr, device=device)
 
 if __name__ == '__main__':
