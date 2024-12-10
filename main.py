@@ -1,13 +1,7 @@
-from datetime import datetime
+import hashlib
 
-print(datetime.now().date())
-# Example current_date string
-current_date_str = "Mon, 09 Dec 2024 00:00:00 GMT"
+text = "insert_shop"
 
-# Convert string to datetime object
-current_date = datetime.strptime(current_date_str, "%a, %d %b %Y %H:%M:%S GMT")
+hashed = hashlib.sha256(text.encode('utf-8')).hexdigest()
 
-# Format the datetime object to the desired format: 'YYYY-MM-DD'
-formatted_date = current_date.strftime("%Y-%m-%d")
-
-# print(formatted_date)  # Output: 2024-12-09
+print(hashed)

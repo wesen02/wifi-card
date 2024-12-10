@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wi-Fi QR Code Generator</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  </head>
+  <body>
+    <h1>Wi-Fi QR Code Generator</h1>
+    <label for="ssid">Wi-Fi SSID:</label>
+    <input
+      type="text"
+      id="ssid"
+      placeholder="Enter your Wi-Fi SSID"
+      required
+    /><br /><br />
+
+    <label for="password">Wi-Fi Password:</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="Enter your Wi-Fi password"
+      required
+    /><br /><br />
+
+    <label for="encryption">Encryption Type:</label>
+    <select id="encryption">
+      <option value="WPA">WPA</option>
+      <option value="WEP">WEP</option>
+      <option value="">No Encryption</option></select
+    ><br /><br />
+
+    <button onclick="generateQRCode()">Generate QR Code</button>
+
+    <div id="qrcode-container" style="margin-top: 20px">
+      <!-- QR Code will be displayed here -->
+    </div>
+
+    <script>
+      function generateQRCode() {
+        const ssid = document.getElementById('ssid').value;
+        const password = document.getElementById('password').value;
+        const encryption = document.getElementById('encryption').value;
+
+        if (ssid && password) {
+          const wifiFormat = `WIFI:T:${encryption};S:${ssid};P:${password};;`;
+          const qrcodeContainer = document.getElementById('qrcode-container');
+
+          // Clear any existing QR code
+          qrcodeContainer.innerHTML = '';
+
+          // Create a QR code element
+          const qrCodeElement = document.createElement('div');
+          new QRCode(qrCodeElement, wifiFormat);
+
+          // Make the QR code clickable
+          const link = document.createElement('a');
+          link.href = wifiFormat;
+          link.target = '_blank'; // Open the QR code details in a new tab
+          link.title = 'Click to view Wi-Fi details'; // Title for the link
+          link.appendChild(qrCodeElement);
+
+          qrcodeContainer.appendChild(link);
+        } else {
+          alert('Please enter both SSID and Password');
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -95,21 +95,25 @@ def wifi_shop():
     # Generate the path to the Wi-Fi QR code image
     wifi_qr = f"/static/assets/wifi_qr/{shop_code}.png"
 
+    device=None
+
     # Detect the device type based on the User-Agent header
     user_agent = request.headers.get('User-Agent', '').lower()
     if "iphone" in user_agent:
-        device = "iPhone"
+        gif_guide = "/static/assets/connection_guide/iphone_user.gif"
     elif "android" in user_agent:
-        device = "Android Phone"
+        gif_guide = "/static/assets/connection_guide/android_user.gif"
+    elif "harmonyos" in user_agent:
+        gif_guide = "None"
     elif "windows" in user_agent:
-        device = "Windows Device"
+        gif_guide = "None"
     elif "mac" in user_agent:
-        device = "Mac"
+        gif_guide = "None"
     else:
-        device = "Unknown Device"
+        gif_guide = "None"
 
     # Render the HTML template
-    return render_template('video.html', wifi_qr=wifi_qr, device=device)
+    return render_template('video.html', wifi_qr=wifi_qr, user_guide=gif_guide, device=device)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
