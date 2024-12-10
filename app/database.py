@@ -225,17 +225,17 @@ def ad_info(selected_ad):
 
         ad_data = cursor.fetchone()
 
-        url_link = ad_data[-3]
-        media_path = ad_data[-4]
-
-        media_path = "/static" + media_path.split("static")[-1]
-
-        data_json = {
-            "media_path": media_path,
-            "url_link": url_link
-        }
-
         if ad_data:
+            url_link = ad_data[-3]
+            media_path = ad_data[-4]
+
+            media_path = "/static" + media_path.split("static")[-1]
+
+            data_json = {
+                "media_path": media_path,
+                "url_link": url_link
+            }
+
             exposure = ad_data[-2] + 1
 
             update_query = """
