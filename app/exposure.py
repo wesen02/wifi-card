@@ -19,7 +19,10 @@ def exposure_cal(all_ads):
 
     budget_total = sum(budget_arr)
     probabilities = [float(budget) / float(budget_total) for budget in budget_arr]
+    
+    selected_ad = None
 
-    selected_ad = random.choices(ads_id, weights=probabilities, k=1)[0]
+    if len(probabilities) > 0:
+        selected_ad = random.choices(ads_id, weights=probabilities, k=1)[0]
 
     return selected_ad

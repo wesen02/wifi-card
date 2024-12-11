@@ -81,6 +81,10 @@ def get_video():
     # video = video_database()
     all_ads = read_ads_db()
     selected_ad = exposure_cal(all_ads)
+    
+    if selected_ad == None:
+        return jsonify(None)
+        
     media = ad_info(selected_ad)
 
     return jsonify(media)
