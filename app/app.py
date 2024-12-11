@@ -69,11 +69,11 @@ def upload_file():
         "media_path": media_path
     }
 
-    return jsonify(response)
+    return jsonify(response) 
 
 @app.route('/popup')
 def popup():
-    return render_template('video.html')
+    return render_template('media.html')
 
 @app.route('/get_video', methods=['GET'])
 def get_video():
@@ -117,7 +117,7 @@ def wifi_shop():
         gif_guide = "None"
 
     # Render the HTML template
-    return render_template('video.html', wifi_qr=wifi_qr, user_guide=gif_guide, device=device)
+    return render_template('media.html', wifi_qr=wifi_qr, user_guide=gif_guide, device=device)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

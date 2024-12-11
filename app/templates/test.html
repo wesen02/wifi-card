@@ -3,69 +3,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wi-Fi QR Code Generator</title>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-  </head>
-  <body>
-    <h1>Wi-Fi QR Code Generator</h1>
-    <label for="ssid">Wi-Fi SSID:</label>
-    <input
-      type="text"
-      id="ssid"
-      placeholder="Enter your Wi-Fi SSID"
-      required
-    /><br /><br />
-
-    <label for="password">Wi-Fi Password:</label>
-    <input
-      type="password"
-      id="password"
-      placeholder="Enter your Wi-Fi password"
-      required
-    /><br /><br />
-
-    <label for="encryption">Encryption Type:</label>
-    <select id="encryption">
-      <option value="WPA">WPA</option>
-      <option value="WEP">WEP</option>
-      <option value="">No Encryption</option></select
-    ><br /><br />
-
-    <button onclick="generateQRCode()">Generate QR Code</button>
-
-    <div id="qrcode-container" style="margin-top: 20px">
-      <!-- QR Code will be displayed here -->
-    </div>
-
+    <title>Select State and Area</title>
     <script>
-      function generateQRCode() {
-        const ssid = document.getElementById('ssid').value;
-        const password = document.getElementById('password').value;
-        const encryption = document.getElementById('encryption').value;
+      function updateAreas() {
+        const state = document.getElementById('state').value;
+        const areaSelect = document.getElementById('area');
+        areaSelect.innerHTML = ''; // Clear previous options
 
-        if (ssid && password) {
-          const wifiFormat = `WIFI:T:${encryption};S:${ssid};P:${password};;`;
-          const qrcodeContainer = document.getElementById('qrcode-container');
+        if (state === 'Kuala Lumpur') {
+          const areas = [
+            {
+              value: 'all_area',
+              text: 'All area',
+            },
+            {
+              value: 'golden_triangle',
+              text: 'Golden Triangle (Bukit Bintang, Pudu)',
+            },
+            { value: 'old_city_centre', text: 'Old City Centre (Chinatown)' },
+            { value: 'botanical_garden', text: 'Botanical Garden' },
+            {
+              value: 'brickfields_bangsar',
+              text: 'Brickfields and Bangsar (Brickfields, Bangsar, Bukit Persekutuan, Mid Valley, Seputeh)',
+            },
+            {
+              value: 'north_of_city_centre',
+              text: 'North of City Centre (Kampung Baru, Titiwangsa, Tuanku Abdul Rahman, Chow Kit)',
+            },
+            {
+              value: 'western_suburbs',
+              text: 'Western suburbs (Bukit Damansara, Desa Sri Hartamas, Bukit Tunku, Taman Tun Dr Ismail (TTDI), Taman Bukit Maluri)',
+            },
+            {
+              value: 'eastern_suburbs',
+              text: 'Eastern suburbs (Ampang, Desa Pandan, Taman Maluri, Cheras, Salak Selatan)',
+            },
+            {
+              value: 'northern_suburbs',
+              text: 'Northern suburbs (Sentul, Batu, Setapak, Wangsa Maju, Desa Melawati)',
+            },
+            {
+              value: 'southern_suburbs',
+              text: 'Southern suburbs (Taman Desa, Kuchai Lama, Sungai Besi, Bandar Tasik Selatan, Alam Damai, Bukit Jalil, Sri Petaling)',
+            },
+          ];
 
-          // Clear any existing QR code
-          qrcodeContainer.innerHTML = '';
-
-          // Create a QR code element
-          const qrCodeElement = document.createElement('div');
-          new QRCode(qrCodeElement, wifiFormat);
-
-          // Make the QR code clickable
-          const link = document.createElement('a');
-          link.href = wifiFormat;
-          link.target = '_blank'; // Open the QR code details in a new tab
-          link.title = 'Click to view Wi-Fi details'; // Title for the link
-          link.appendChild(qrCodeElement);
-
-          qrcodeContainer.appendChild(link);
+          areas.forEach((area) => {
+            const option = document.createElement('option');
+            option.value = area.value;
+            option.textContent = area.text;
+            areaSelect.appendChild(option);
+          });
         } else {
-          alert('Please enter both SSID and Password');
+          const option = document.createElement('option');
+          option.textContent = 'Please select Kuala Lumpur first';
+          areaSelect.appendChild(option);
         }
       }
     </script>
+  </head>
+  <body>
+    <h2>Select State and Area in Malaysia</h2>
+    <form action="" method="POST">
+      <label for="state">Select State:</label>
+      <select id="state" name="state" onchange="updateAreas()">
+        <option value="">--Select State--</option>
+        <option value="Kuala Lumpur">Kuala Lumpur</option>
+        <!-- Add other states here as needed -->
+        <option value="Selangor">Selangor</option>
+        <option value="Penang">Penang</option>
+        <option value="Johor">Johor</option>
+        <!-- Add more states as required -->
+      </select>
+      <br /><br />
+
+      <label for="area">Choose an Area in Kuala Lumpur:</label>
+      <select id="area" name="area">
+        <option value="">Please select a state first</option>
+      </select>
+      <br /><br />
+      <input type="submit" value="Submit" />
+    </form>
   </body>
 </html>
