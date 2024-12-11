@@ -113,6 +113,22 @@
         transform: scale(1.1);
       }
 
+      #placeAdsHere {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        background: #4e73df;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      #placeAdsHere:hover {
+        background: #2c3e50;
+      }
+
       #showGuideBtn {
         margin-top: 20px;
         padding: 10px 20px;
@@ -231,7 +247,7 @@
         src="{{wifi_qr}}"
         alt="Wifi QR code"
         style="display: block; margin: 0 auto"
-      />
+      /> 
       <!-- Button to show GIF -->
       <button id="showGuideBtn">How to Connect?</button>
       <div id="gifContainer" style="display: none">
@@ -241,6 +257,9 @@
           class="guide-gif"
         />
       </div>
+      <button id="placeAdsHere" onclick="window.location.href='upload_ads'">
+        Place Your Ads Here
+      </button>
     </div>
 
     <script>
