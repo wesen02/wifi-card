@@ -12,9 +12,13 @@ app.secret_key = "weconnect"
 
 # Set the upload folder for video
 UPLOAD_FOLDER = 'static/assets/ads_media'
+wifi_qr_dir = 'static/assets/wifi_qr'
+shop_qr_dir = 'static/assets/shop_qr'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(wifi_qr_dir, exist_ok=True)
+os.makedirs(shop_qr_dir, exist_ok=True)
 
 @app.route('/')
 def home():
@@ -98,7 +102,6 @@ def popup():
 # @app.route('/get_video', methods=['GET'])
 def get_video(shop_code):
     # Decide which video to serve
-    # video = video_database()
     media = {
         "media_path": "/static/assets/ads_media/image.png",
         "url_link": "/upload"
@@ -106,14 +109,14 @@ def get_video(shop_code):
     shop_location = get_location(shop_code)
     if shop_location:
         all_ads = read_ads_db(shop_location)
+
         selected_ad = exposure_cal(all_ads)
-        
-        if selected_ad == None:
+        if selected_ad is None:
             return media
             
         media = ad_info(selected_ad, shop_location)
 
-        return media
+    return media
     
 @app.route('/scan')
 def wifi_shop():

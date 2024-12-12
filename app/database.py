@@ -233,7 +233,7 @@ def ad_info(selected_ad, shop_location):
         database_name = f"ad_campaigns_{shop_location['target_state']}_{shop_location['target_area']}"
 
         search_query = f"""
-        SELECT * FROM {database_name} WHERE id = %s
+        SELECT * FROM {database_name} WHERE id = %s AND  verify = TRUE
         """
 
         cursor.execute(search_query, (selected_ad,))
@@ -241,11 +241,14 @@ def ad_info(selected_ad, shop_location):
 
         ad_data = cursor.fetchone()
 
-        data_json = {}
+        data_json = {
+            "media_path": "/static/assets/ads_media/image.png",
+            "url_link": "/upload"
+        }
 
         if ad_data:
-            url_link = ad_data[-5]
-            media_path = ad_data[-6]
+            url_link = ad_data[-6]
+            media_path = ad_data[-7]
 
             media_path = "/static" + media_path.split("static")[-1]
 
@@ -254,7 +257,7 @@ def ad_info(selected_ad, shop_location):
                 "url_link": url_link
             }
 
-            exposure = ad_data[-4] + 1
+            exposure = ad_data[-5] + 1
 
             update_query = f"""
                 UPDATE {database_name}
@@ -266,6 +269,8 @@ def ad_info(selected_ad, shop_location):
             conn.commit()
             conn.close()
             return data_json
+
+        return data_json
 
     except OperationalError as e:
         # Handle specific operational errors (e.g., connection issues)
