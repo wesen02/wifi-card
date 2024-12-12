@@ -277,40 +277,50 @@
         closePopup();
       };
 
-      // Fetch video and link dynamically from Flask API
-      fetch('/get_video')
-        .then((response) => response.json())
-        .then((data) => {
+      const media = '{{media}}';
+      let parser = new DOMParser();
+      let mediaStr = parser.parseFromString(media, 'text/html').body
+        .textContent;
+
+      try {
+        // Parse JSON
+        let validJsonStr = mediaStr.replace(/'/g, '"');
+        let mediaDict = JSON.parse(validJsonStr);
+
+        console.log('Decoded Media Content:', mediaDict);
+
+        if (mediaDict) {
           const videoPlayer = document.getElementById('background-video');
           const videoSource = document.getElementById('videoSource');
           const videoLink = document.getElementById('videoLink');
           const imageSource = document.getElementById('fallback-image');
 
-          if (data == null) {
-            closePopup();
+          document.getElementById('popup').style.display = 'block';
+          document.getElementById('overlay').style.display = 'block';
+
+          const videoUrl = mediaDict.media_path;
+
+          // Check file extension for video support
+          if (videoUrl.endsWith('.mp4') || videoUrl.endsWith('.mov')) {
+            videoSource.src = videoUrl;
+            videoSource.type = 'video/mp4';
+            videoPlayer.load();
+            imageSource.style.display = 'none'; // Hide fallback image
           } else {
-            document.getElementById('popup').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-
-            const videoUrl = data.media_path;
-
-            // Check if the file extension is not '.mp4'
-            if (videoUrl.endsWith('.mp4') || videoUrl.endsWith('.mov')) {
-              videoSource.src = videoUrl;
-              videoSource.type = 'video/mp4';
-              videoPlayer.load();
-              // Hide the fallback image if video is supported
-              document.getElementById('fallback-image').style.display = 'none';
-            } else {
-              // If the file is not a video (or not an mp4 file), show an image
-              videoPlayer.style.display = 'none'; // Hide video player
-              imageSource.src = videoUrl;
-              document.getElementById('fallback-image').style.display = 'block'; // Show fallback image
-            }
-            videoLink.href = data.url_link;
+            // Show fallback image if not a supported video
+            videoPlayer.style.display = 'none';
+            imageSource.src = videoUrl;
+            imageSource.style.display = 'block';
           }
-        })
-        .catch((error) => console.error('Error fetching video data:', error));
+
+          videoLink.href = mediaDict.url_link;
+        } else {
+          console.error('Media data is missing.');
+          closePopup();
+        }
+      } catch (error) {
+        console.error('Error processing media data:', error);
+      }
 
       document.getElementById('unmute-btn').addEventListener('click', () => {
         const video = document.getElementById('background-video');

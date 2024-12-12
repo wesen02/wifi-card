@@ -1,272 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Advertisement</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .slider-form-range {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 5px;
+        outline: none;
+        transition: background 0.3s ease-in-out;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload Advertisement</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    .slider-form-range {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 8px;
-      background: #e9ecef;
-      border-radius: 5px;
-      outline: none;
-      transition: background 0.3s ease-in-out;
-    }
+      .slider-form-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
 
-    .slider-form-range::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 16px;
-      height: 16px;
-      background: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    }
+      .slider-form-range::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
 
-    .slider-form-range::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      background: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    }
+      .slider-form-range::-ms-thumb {
+        width: 16px;
+        height: 16px;
+        background: #007bff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+      }
 
-    .slider-form-range::-ms-thumb {
-      width: 16px;
-      height: 16px;
-      background: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-    }
+      form label {
+        font-weight: bold;
+      }
+    </style>
+  </head>
 
-    form label {
-      font-weight: bold;
-    }
-  </style>
-</head>
+  <body>
+    <div class="container mt-5">
+      <h2 class="text-center mb-4">Upload Your Advertisement</h2>
+      <form
+        action="/uploadAds"
+        method="POST"
+        enctype="multipart/form-data"
+        id="adForm"
+        class="shadow p-4 rounded bg-light"
+      >
+        <!-- Company Name -->
+        <div class="mb-3">
+          <label for="company_name" class="form-label">Company Name</label>
+          <input
+            type="text"
+            id="company_name"
+            name="company_name"
+            class="form-control"
+            placeholder="Enter your company name"
+            required
+          />
+        </div>
 
-<body>
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">Upload Your Advertisement</h2>
-    <form action="/uploadAds" method="POST" enctype="multipart/form-data" id="adForm"
-      class="shadow p-4 rounded bg-light">
-      <!-- Company Name -->
-      <div class="mb-3">
-        <label for="company_name" class="form-label">Company Name</label>
-        <input type="text" id="company_name" name="company_name" class="form-control"
-          placeholder="Enter your company name" required />
-      </div>
+        <!-- Campaign Title -->
+        <div class="mb-3">
+          <label for="campaign_title" class="form-label">Campaign Title</label>
+          <input
+            type="text"
+            id="campaign_title"
+            name="campaign_title"
+            class="form-control"
+            placeholder="Enter your campaign title"
+            required
+          />
+        </div>
 
-      <!-- Campaign Title -->
-      <div class="mb-3">
-        <label for="campaign_title" class="form-label">Campaign Title</label>
-        <input type="text" id="campaign_title" name="campaign_title" class="form-control"
-          placeholder="Enter your campaign title" required />
-      </div>
+        <div class="mb-3">
+          <label for="url_link" class="form-label">URL Link</label>
+          <input
+            type="url"
+            id="url_link"
+            name="url_link"
+            class="form-control"
+            placeholder="Insert your website link"
+            required
+          />
+        </div>
 
-      <div class="mb-3">
-        <label for="url_link" class="form-label">URL Link</label>
-        <input type="url" id="url_link" name="url_link" class="form-control" placeholder="Insert your website link"
-          required />
-      </div>
-
-      <!-- Campaign Duration -->
-      <div class="mb-3">
-        <label for="start_date" class="form-label">Start Date</label>
-        <div class="row">
-          <div class="col">
-            <input type="date" id="start_date" name="start_date" class="form-control" required />
+        <!-- Campaign Duration -->
+        <div class="mb-3">
+          <label for="start_date" class="form-label">Start Date</label>
+          <div class="row">
+            <div class="col">
+              <input
+                type="date"
+                id="start_date"
+                name="start_date"
+                class="form-control"
+                required
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label for="budget" class="form-label">Daily Budget</label>
-        <input type="range" id="budget" name="budget" class="slider-form-range" min="8" max="100" step="4" value="8"
-          oninput="updateBudgetSlider(this)" />
-        <output id="slider-value-budget">8</output>
-      </div>
+        <div class="mb-3">
+          <label for="budget" class="form-label">Daily Budget</label>
+          <input
+            type="range"
+            id="budget"
+            name="budget"
+            class="slider-form-range"
+            min="8"
+            max="100"
+            step="4"
+            value="8"
+            oninput="updateBudgetSlider(this)"
+          />
+          <output id="slider-value-budget">8</output>
+        </div>
 
-      <div class="mb-3">
-        <label for="duration" class="form-label">Duration (in days)</label>
-        <input type="range" id="duration" name="duration" class="slider-form-range" min="1" max="30" step="1" value="1"
-          oninput="updateDurationSlider(this)" />
-        <output id="slider-value-duration">1</output>
-      </div>
+        <div class="mb-3">
+          <label for="duration" class="form-label">Duration (in days)</label>
+          <input
+            type="range"
+            id="duration"
+            name="duration"
+            class="slider-form-range"
+            min="1"
+            max="30"
+            step="1"
+            value="1"
+            oninput="updateDurationSlider(this)"
+          />
+          <output id="slider-value-duration">1</output>
+        </div>
 
-      <!-- Ad Category -->
-      <div class="mb-3">
-        <label for="ad_category" class="form-label">Ad Category</label>
-        <select id="ad_category" name="ad_category" class="form-select" required>
-          <option value="" disabled selected>Select a category</option>
-          <option value="technology">Technology</option>
-          <option value="food_beverage">Food & Beverage</option>
-          <option value="retail">Retail</option>
-          <option value="entertainment">Entertainment</option>
-        </select>
-      </div>
+        <!-- Ad Category -->
+        <div class="mb-3">
+          <label for="ad_category" class="form-label">Ad Category</label>
+          <select
+            id="ad_category"
+            name="ad_category"
+            class="form-select"
+            required
+          >
+            <option value="" disabled selected>Select a category</option>
+            <option value="technology">Technology</option>
+            <option value="food_beverage">Food & Beverage</option>
+            <option value="retail">Retail</option>
+            <option value="entertainment">Entertainment</option>
+          </select>
+        </div>
 
-      <div class="mb-3">
-        <label for="target_state" class="form-label">Choose the target state</label>
-        <select id="target_state" name="target_state" class="form-select" onchange="updateAreas()" required>
-          <option value="">--Select State--</option>
-          <option value="kuala_lumpur">Kuala Lumpur</option>
-          <!-- Add other states here as needed -->
-          <option value="selangor">Selangor</option>
-          <option value="penang">Penang</option>
-          <option value="johor">Johor</option>
-          <!-- Add more states as required -->
-        </select>
+        <div class="mb-3">
+          <label for="target_state" class="form-label"
+            >Choose the target state</label
+          >
+          <select
+            id="target_state"
+            name="target_state"
+            class="form-select"
+            onchange="updateAreas()"
+            required
+          >
+            <option value="kuala_lumpur">Kuala Lumpur</option>
+            <!-- Add other states here as needed -->
+            <option value="selangor">Selangor</option>
+            <option value="penang">Penang</option>
+            <option value="johor">Johor</option>
+            <!-- Add more states as required -->
+          </select>
 
-        <label for="target_area" class="form-label">Target Area</label>
-        <select id="target_area" name="target_area" class="form-select" required>
-          <option value="">Please select a state first</option>
-        </select>
-      </div>
+          <label for="target_area" class="form-label">Target Area</label>
+          <select
+            id="target_area"
+            name="target_area"
+            class="form-select"
+            required
+          >
+            <option value="">Please select a state first</option>
+          </select>
+        </div>
 
-      <!-- Additional Notes -->
-      <div class="mb-3">
-        <label for="notes" class="form-label">Additional Notes</label>
-        <textarea id="notes" name="notes" class="form-control" placeholder="Enter any additional details"
-          rows="3"></textarea>
-      </div>
+        <!-- Additional Notes -->
+        <div class="mb-3">
+          <label for="notes" class="form-label">Additional Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            class="form-control"
+            placeholder="Enter any additional details"
+            rows="3"
+          ></textarea>
+        </div>
 
-      <!-- Media Upload -->
-      <div class="mb-3">
-        <label for="media_upload" class="form-label">Upload Advertisement Media</label>
-        <input type="file" id="media" name="media" accept="video/*,image/*" class="form-control" required /><br /><br />
-      </div>
+        <!-- Media Upload -->
+        <div class="mb-3">
+          <label for="media_upload" class="form-label"
+            >Upload Advertisement Media</label
+          >
+          <input
+            type="file"
+            id="media"
+            name="media"
+            accept="video/*,image/*"
+            class="form-control"
+            required
+          /><br /><br />
+        </div>
 
-      <!-- Submit Button -->
-      <div class="text-center">
-        <button type="submit" id="submitBtn" class="btn btn-primary">
-          Submit
-        </button>
-      </div>
-    </form>
-  </div>
-</body>
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" id="submitBtn" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
 
-<body>
-  <!-- Include this script to hash file names -->
-  <script>
-    window.onload = function () {
-      updateAreas(); // Trigger the function on page load
-    }
-    async function hashFileName(file) {
-      const fileName = file.name;
-      const encoder = new TextEncoder();
-      const data = encoder.encode(fileName);
+  <body>
+    <!-- Include this script to hash file names -->
+    <script>
+      window.onload = function () {
+        updateAreas(); // Trigger the function on page load
+      };
+      async function hashFileName(file) {
+        const fileName = file.name;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(fileName);
 
-      // Generate SHA-256 hash
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray
-        .map((byte) => byte.toString(16).padStart(2, '0'))
-        .join('');
-      return hashHex + fileName.slice(fileName.lastIndexOf('.')); // Add original file extension
-    }
-
-    function updateBudgetSlider(slider) {
-      // Calculate the percentage of the slider's current position
-      const percentage =
-        ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
-
-      // Update the slider's background to reflect the progress
-      slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
-
-      // Update the displayed value
-      document.getElementById('slider-value-budget').textContent =
-        slider.value;
-    }
-
-    function updateDurationSlider(slider) {
-      // Calculate the percentage of the slider's current position
-      const percentage =
-        ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
-
-      // Update the slider's background to reflect the progress
-      slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
-
-      // Update the displayed value
-      document.getElementById('slider-value-duration').textContent =
-        slider.value;
-    }
-
-    // Initialize the slider bar background on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      const slider = document.getElementById('duration');
-      updateDurationSlider(slider);
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const slider = document.getElementById('budget');
-      updateBudgetSlider(slider);
-    });
-
-    function updateAreas() {
-      const state = document.getElementById('target_state').value;
-      const areaSelect = document.getElementById('target_area');
-      areaSelect.innerHTML = ''; // Clear previous options
-
-      if (state === 'kuala_lumpur') {
-        const areas = [
-          {
-            value: 'all_area',
-            text: 'All area',
-          },
-          {
-            value: 'golden_triangle',
-            text: 'Golden Triangle (Bukit Bintang, Pudu)',
-          },
-          { value: 'old_city_centre', text: 'Old City Centre (Chinatown)' },
-          { value: 'botanical_garden', text: 'Botanical Garden' },
-          {
-            value: 'brickfields_bangsar',
-            text: 'Brickfields and Bangsar (Brickfields, Bangsar, Bukit Persekutuan, Mid Valley, Seputeh)',
-          },
-          {
-            value: 'north_of_city_centre',
-            text: 'North of City Centre (Kampung Baru, Titiwangsa, Tuanku Abdul Rahman, Chow Kit)',
-          },
-          {
-            value: 'western_suburbs',
-            text: 'Western suburbs (Bukit Damansara, Desa Sri Hartamas, Bukit Tunku, Taman Tun Dr Ismail (TTDI), Taman Bukit Maluri)',
-          },
-          {
-            value: 'eastern_suburbs',
-            text: 'Eastern suburbs (Ampang, Desa Pandan, Taman Maluri, Cheras, Salak Selatan)',
-          },
-          {
-            value: 'northern_suburbs',
-            text: 'Northern suburbs (Sentul, Batu, Setapak, Wangsa Maju, Desa Melawati)',
-          },
-          {
-            value: 'southern_suburbs',
-            text: 'Southern suburbs (Taman Desa, Kuchai Lama, Sungai Besi, Bandar Tasik Selatan, Alam Damai, Bukit Jalil, Sri Petaling)',
-          },
-        ];
-
-        areas.forEach((area) => {
-          const option = document.createElement('option');
-          option.value = area.value;
-          option.textContent = area.text;
-          areaSelect.appendChild(option);
-        });
-      } else {
-        const option = document.createElement('option');
-        option.textContent = 'Please select Kuala Lumpur first';
-        areaSelect.appendChild(option);
+        // Generate SHA-256 hash
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+          .map((byte) => byte.toString(16).padStart(2, '0'))
+          .join('');
+        return hashHex + fileName.slice(fileName.lastIndexOf('.')); // Add original file extension
       }
-    }
-  </script>
-</body>
 
+      function updateBudgetSlider(slider) {
+        // Calculate the percentage of the slider's current position
+        const percentage =
+          ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+        // Update the slider's background to reflect the progress
+        slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
+
+        // Update the displayed value
+        document.getElementById('slider-value-budget').textContent =
+          slider.value;
+      }
+
+      function updateDurationSlider(slider) {
+        // Calculate the percentage of the slider's current position
+        const percentage =
+          ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+        // Update the slider's background to reflect the progress
+        slider.style.background = `linear-gradient(to right, #007bff ${percentage}%, #e9ecef ${percentage}%)`;
+
+        // Update the displayed value
+        document.getElementById('slider-value-duration').textContent =
+          slider.value;
+      }
+
+      // Initialize the slider bar background on page load
+      document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('duration');
+        updateDurationSlider(slider);
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('budget');
+        updateBudgetSlider(slider);
+      });
+
+      function updateAreas() {
+        const state = document.getElementById('target_state').value;
+        const areaSelect = document.getElementById('target_area');
+        areaSelect.innerHTML = ''; // Clear previous options
+
+        if (state === 'kuala_lumpur') {
+          const areas = [
+            {
+              value: 'all_area',
+              text: 'All area',
+            },
+            {
+              value: 'golden_triangle',
+              text: 'Golden Triangle (Bukit Bintang, Pudu)',
+            },
+            { value: 'old_city_centre', text: 'Old City Centre (Chinatown)' },
+            { value: 'botanical_garden', text: 'Botanical Garden' },
+            {
+              value: 'brickfields_bangsar',
+              text: 'Brickfields and Bangsar (Brickfields, Bangsar, Bukit Persekutuan, Mid Valley, Seputeh)',
+            },
+            {
+              value: 'north_of_city_centre',
+              text: 'North of City Centre (Kampung Baru, Titiwangsa, Tuanku Abdul Rahman, Chow Kit)',
+            },
+            {
+              value: 'western_suburbs',
+              text: 'Western suburbs (Bukit Damansara, Desa Sri Hartamas, Bukit Tunku, Taman Tun Dr Ismail (TTDI), Taman Bukit Maluri)',
+            },
+            {
+              value: 'eastern_suburbs',
+              text: 'Eastern suburbs (Ampang, Desa Pandan, Taman Maluri, Cheras, Salak Selatan)',
+            },
+            {
+              value: 'northern_suburbs',
+              text: 'Northern suburbs (Sentul, Batu, Setapak, Wangsa Maju, Desa Melawati)',
+            },
+            {
+              value: 'southern_suburbs',
+              text: 'Southern suburbs (Taman Desa, Kuchai Lama, Sungai Besi, Bandar Tasik Selatan, Alam Damai, Bukit Jalil, Sri Petaling)',
+            },
+          ];
+
+          areas.forEach((area) => {
+            const option = document.createElement('option');
+            option.value = area.value;
+            option.textContent = area.text;
+            areaSelect.appendChild(option);
+          });
+        } else {
+          const option = document.createElement('option');
+          option.textContent = 'Please select Kuala Lumpur first';
+          areaSelect.appendChild(option);
+        }
+      }
+    </script>
+  </body>
 </html>

@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for
 from qrcode_generator import qr_shop
 import os
-from database import shop_database, ads_db, read_ads_db, ad_info
+from database import shop_database, ads_db, read_ads_db, ad_info, get_location
 from exposure import exposure_cal
+from register_db import register_database
+from login_db import login_database
 
 app = Flask(__name__)
+app.secret_key = "weconnect"
 
 # Set the upload folder for video
 UPLOAD_FOLDER = 'static/assets/ads_media'
@@ -18,7 +21,19 @@ def home():
 
 @app.route('/insert_shop')
 def insert_shop():
-   return render_template('shop_info.html')
+    if 'username' in session:   
+        return render_template('shop_info.html')
+    else:
+        flash("Please log in to access this page.", "warning")
+        return render_template('index.html')
+    
+@app.route('/control_panel')
+def control_panel():
+    if 'username' in session:   
+        return render_template('control_panel.html')
+    else:
+        flash("Please log in to access this page.", "warning")
+        return render_template('index.html')
 
 @app.route('/submit', methods=['POST', 'GET'])
 def submit():
@@ -36,7 +51,11 @@ def submit():
 
 @app.route('/upload_ads')
 def upload_ads():
-    return render_template('upload_ads.html')
+    if 'username' in session:   
+        return render_template('upload_ads.html')
+    else:
+        flash("Please log in to access this page.", "warning")
+        return render_template('index.html')
 
 @app.route('/uploadAds', methods=['POST'])
 def upload_file():
@@ -75,31 +94,37 @@ def upload_file():
 def popup():
     return render_template('media.html')
 
-@app.route('/get_video', methods=['GET'])
-def get_video():
+# @app.route('/get_video', methods=['GET'])
+def get_video(shop_code):
     # Decide which video to serve
     # video = video_database()
-    all_ads = read_ads_db()
-    selected_ad = exposure_cal(all_ads)
-    
-    if selected_ad == None:
-        return jsonify(None)
+    media = {
+        "media_path": "/static/assets/ads_media/image.png",
+        "url_link": "/upload"
+    }
+    shop_location = get_location(shop_code)
+    if shop_location:
+        all_ads = read_ads_db(shop_location)
+        selected_ad = exposure_cal(all_ads)
         
-    media = ad_info(selected_ad)
+        if selected_ad == None:
+            return media
+            
+        media = ad_info(selected_ad, shop_location)
 
-    return jsonify(media)
-
+        return media
+    
 @app.route('/scan')
 def wifi_shop():
     # Extract the shop code from the query parameter
     shop_code = request.args.get('qr')
     if not shop_code:
         return "Shop code is missing", 400
+    
+    media = get_video(shop_code)
 
     # Generate the path to the Wi-Fi QR code image
     wifi_qr = f"/static/assets/wifi_qr/{shop_code}.png"
-
-    device=None
 
     # Detect the device type based on the User-Agent header
     user_agent = request.headers.get('User-Agent', '').lower()
@@ -108,7 +133,7 @@ def wifi_shop():
     elif "android" in user_agent:
         gif_guide = "/static/assets/connection_guide/android_user.gif"
     elif "harmonyos" in user_agent:
-        gif_guide = "None"
+        gif_guide = "/static/assets/connection_guide/android_user.gif"
     elif "windows" in user_agent:
         gif_guide = "None"
     elif "mac" in user_agent:
@@ -117,7 +142,52 @@ def wifi_shop():
         gif_guide = "None"
 
     # Render the HTML template
-    return render_template('media.html', wifi_qr=wifi_qr, user_guide=gif_guide, device=device)
+    return render_template('media.html', wifi_qr=wifi_qr, user_guide=gif_guide, media=media)
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/register_user', methods=['POST'])
+def register_user():
+    email = request.form['email']
+    username = request.form['username']
+    password = request.form['password']
+
+    user_info = {
+        "email": email,
+        "username": username,
+        "password": password
+    }
+
+    status = register_database(user_info)
+
+    return status
+
+@app.route('/login_user', methods=['POST'])
+def login_user():
+    username = request.form['username']
+    password = request.form['password']
+
+    user_info = {
+        "username": username,
+        "password": password
+    }
+
+    status = login_database(user_info)
+
+    if status == True:
+        session['username'] = username
+        flash("Login successful!", "success")
+        return redirect(url_for('control_panel'))
+
+    return status
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    flash("You have been logged out.", "info")
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

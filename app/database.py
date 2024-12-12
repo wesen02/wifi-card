@@ -31,14 +31,16 @@ def connect_db():
 
     return conn, cursor
 
-def read_ads_db():
+def read_ads_db(shop_location):
     conn = None
     cursor = None
     try:
         conn, cursor = connect_db()
 
+        database_name = f"ad_campaigns_{shop_location['target_state']}_{shop_location['target_area']}"
+
         # Define your SQL query
-        query = "SELECT * FROM ad_campaigns"
+        query = f"SELECT * FROM {database_name}"
 
         # Execute the query
         cursor.execute(query)
@@ -68,7 +70,9 @@ def shop_database(shop_info):
         wifi_name = shop_info["wifi_name"]
         wifi_password = shop_info["wifi_password"]
         security_type = shop_info["security_type"]
-        location = shop_info["location"]
+        target_state = shop_info["target_state"]
+        target_area = shop_info["target_area"]
+
         shop_code = hash_text(shop_name + wifi_name)[:6]
 
         try:
@@ -84,7 +88,8 @@ def shop_database(shop_info):
                 wifi_name VARCHAR(255) NOT NULL,
                 wifi_password VARCHAR(255) NOT NULL,
                 security_type VARCHAR(10) NOT NULL CHECK (security_type IN ('WPA', 'WPA2', 'WEP', 'Open')),
-                location TEXT NOT NULL,
+                target_state TEXT NOT NULL,
+                target_area TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             '''
@@ -111,12 +116,12 @@ def shop_database(shop_info):
                 print("Table created successfully (if it didn't exist already).")
 
                 insert_query = """
-                INSERT INTO wifi_shops (shop_name, shop_code, phone_num, wifi_name, wifi_password, security_type, location)
-                VALUES (%s, %s, %s, %s, %s, %s, %s);
+                INSERT INTO wifi_shops (shop_name, shop_code, phone_num, wifi_name, wifi_password, security_type, target_state, target_area)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
                 """
 
                 # Execute the query
-                cursor.execute(insert_query, (shop_name, shop_code, phone_num, wifi_name, wifi_password, security_type, location))
+                cursor.execute(insert_query, (shop_name, shop_code, phone_num, wifi_name, wifi_password, security_type, target_state, target_area))
                 
                 # Commit the transaction
                 conn.commit()
@@ -148,6 +153,10 @@ def ads_db(form_data, ad_video):
     ad_category = form_data["ad_category"]
     notes = form_data["notes"]
     url_link = form_data["url_link"]
+
+    target_state = form_data["target_state"]
+    target_area = form_data["target_area"]
+    
     exposure = 0
 
     ad_video = os.path.join(os.getcwd(), ad_video)
@@ -158,9 +167,11 @@ def ads_db(form_data, ad_video):
     try:
         conn, cursor = connect_db()
 
+        database_name = f"ad_campaigns_{target_state}_{target_area}"
+
         # SQL query to create a table if it doesn't exist
-        create_table_query = '''
-            CREATE TABLE IF NOT EXISTS ad_campaigns (
+        create_table_query = f'''
+            CREATE TABLE IF NOT EXISTS {database_name} (
             id SERIAL PRIMARY KEY,
             company_name TEXT NOT NULL,
             budget NUMERIC(10, 2) NOT NULL,
@@ -172,6 +183,8 @@ def ads_db(form_data, ad_video):
             ad_video TEXT NOT NULL,
             url_link TEXT NOT NULL, 
             exposure INT NOT NULL,
+            target_state TEXT NOT NULL,
+            target_area TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         '''
@@ -184,13 +197,13 @@ def ads_db(form_data, ad_video):
 
         print("Table created successfully (if it didn't exist already).")
 
-        insert_query = """
-        INSERT INTO ad_campaigns (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        insert_query = f"""
+        INSERT INTO {database_name} (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure, target_state, target_area) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
 
         # Execute the query
-        cursor.execute(insert_query, (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure))
+        cursor.execute(insert_query, (company_name, budget, campaign_title, start_date, duration, ad_category, notes, ad_video, url_link, exposure, target_state, target_area))
         
         # Commit the transaction
         conn.commit()
@@ -212,12 +225,14 @@ def ads_db(form_data, ad_video):
             conn.close()
             print("Database connection closed.")
 
-def ad_info(selected_ad):
+def ad_info(selected_ad, shop_location):
     try:
         conn, cursor = connect_db()
 
-        search_query = """
-        SELECT * FROM ad_campaigns WHERE id = %s
+        database_name = f"ad_campaigns_{shop_location['target_state']}_{shop_location['target_area']}"
+
+        search_query = f"""
+        SELECT * FROM {database_name} WHERE id = %s
         """
 
         cursor.execute(search_query, (selected_ad,))
@@ -225,9 +240,11 @@ def ad_info(selected_ad):
 
         ad_data = cursor.fetchone()
 
+        data_json = {}
+
         if ad_data:
-            url_link = ad_data[-3]
-            media_path = ad_data[-4]
+            url_link = ad_data[-5]
+            media_path = ad_data[-6]
 
             media_path = "/static" + media_path.split("static")[-1]
 
@@ -236,21 +253,57 @@ def ad_info(selected_ad):
                 "url_link": url_link
             }
 
-            exposure = ad_data[-2] + 1
+            exposure = ad_data[-4] + 1
 
-            update_query = """
-                UPDATE ad_campaigns
+            update_query = f"""
+                UPDATE {database_name}
                 SET exposure = %s
                 WHERE id = %s
             """
 
             cursor.execute(update_query, (exposure, selected_ad))
             conn.commit()
+            conn.close()
+            return data_json
 
-        conn.close()
+    except OperationalError as e:
+        # Handle specific operational errors (e.g., connection issues)
+        print(f"OperationalError: {e}")
+    except DatabaseError as e:
+        # Handle database-related errors (e.g., invalid credentials or database not found)
+        print(f"DatabaseError: {e}")
+    except Exception as e:
+        # Catch any other exceptions
+        print(f"An unexpected error occurred: {e}")
+    finally:
+        # Ensure the connection is closed when done
+        if 'conn' in locals() and conn:
+            conn.close()
+            print("Database connection closed.")
 
-        return data_json
+def get_location(shop_code):
+    try:
+        conn, cursor = connect_db()
 
+        search_query = """
+        SELECT * FROM wifi_shops WHERE shop_code = %s
+        """
+
+        cursor.execute(search_query, (shop_code,))
+        conn.commit()
+
+        ad_data = cursor.fetchone()
+
+        if ad_data:
+            location = {
+                "target_state": ad_data[-3],
+                "target_area": ad_data[-2],
+            }
+
+            return location
+        else:
+            return {}
+    
     except OperationalError as e:
         # Handle specific operational errors (e.g., connection issues)
         print(f"OperationalError: {e}")
