@@ -176,12 +176,12 @@ def login_user():
 
     status = login_database(user_info)
 
-    if status == True:
+    if status["status"] == "success":
         session['username'] = username
         flash("Login successful!", "success")
         return redirect(url_for('control_panel'))
-
-    return status
+    else:
+        return status['message']
 
 @app.route('/logout')
 def logout():

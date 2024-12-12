@@ -18,17 +18,19 @@ def login_database(user_info):
 
         user_data = cursor.fetchone()
 
-        if user_data:
+        if user_data is None:
+            return {"status": "error", "message": "Username not found."}
+        else:
             verify_db = user_data[4]
             if not verify_db:
-                return "This account has not verified"
+                return {"status": "error", "message": "This account has not been verified."}
             
             userpass_db = user_data[3]
 
             if userpass_db != hashed_password:
-                return "Wrong Password"
+                return {"status": "error", "message": "Wrong password."}
 
-        return True
+        return {"status": "success", "message": "User found.", "data": user_data}
 
     except OperationalError as e:
         # Handle specific operational errors (e.g., connection issues)
