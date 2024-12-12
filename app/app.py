@@ -5,6 +5,7 @@ from database import shop_database, ads_db, read_ads_db, ad_info, get_location
 from exposure import exposure_cal
 from register_db import register_database
 from login_db import login_database
+from verify_ads import get_ads, update_ads
 
 app = Flask(__name__)
 app.secret_key = "weconnect"
@@ -188,6 +189,24 @@ def logout():
     session.pop('username', None)
     flash("You have been logged out.", "info")
     return redirect(url_for('home'))
+
+@app.route('/ad_verify')
+def ad_verify():
+    if 'username' in session:   
+        ads = get_ads()
+        return render_template('ad_verify.html', tables=ads)
+    else:
+        flash("Please log in to access this page.", "warning")
+        return render_template('index.html')
+
+@app.route('/ads_verify', methods=['POST'])
+def ads_verify():
+    verify_form = request.form
+
+    for table_data, _ in verify_form.items():
+        status = update_ads(table_data)
+
+    return redirect(url_for('ad_verify'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

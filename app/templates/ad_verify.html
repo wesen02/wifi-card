@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL Data</title>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Styled Table</title>
+    </head>
+
+    <style>
+        /* Reset basic styles */
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+        }
+
+        thead th {
+            padding: 8px 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody td {
+            padding: 8px 10px;
+            color: #555;
+            vertical-align: top;
+        }
+
+        /* Link styles */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+
+<body>
+    <h1>Ad Campaign Data</h1>
+
+    <form action="/ads_verify" method="POST">
+        {% for table_name, data in tables %}
+        <h2>Table: {{ table_name }}</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Budget</th>
+                    <th>Start Date</th>
+                    <th>Duration</th>
+                    <th>Target State</th>
+                    <th>Target Area</th>
+                    <th>Created At</th>
+                    <th>Verify</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[11] }}</td>
+                    <td>{{ row[12] }}</td>
+                    <td>{{ row[14] }}</td>
+                    <td>
+                        <input type="checkbox" name="verify/{{ table_name }}/{{ row[0] }}" {% if row[13] %} checked {%
+                            endif %}>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        {% endfor %}
+        <button type="submit">Update</button>
+    </form>
+
+</body>
+
+</html>

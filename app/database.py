@@ -185,6 +185,7 @@ def ads_db(form_data, ad_video):
             exposure INT NOT NULL,
             target_state TEXT NOT NULL,
             target_area TEXT NOT NULL,
+            verify BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         '''

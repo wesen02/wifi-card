@@ -1,66 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Styled Buttons</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f9;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-      }
 
-      h1 {
-        color: #333;
-        margin-bottom: 30px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Styled Buttons</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-      .btn {
-        /* background: linear-gradient(135deg, #007bff); */
-        background-color: #007bff;
-        color: white;
-        font-size: 18px;
-        padding: 15px 40px;
-        margin: 10px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-      }
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+    }
 
-      .btn:hover {
-        background: linear-gradient(135deg, #0056b3);
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-      }
+    .btn {
+      /* background: linear-gradient(135deg, #007bff); */
+      background-color: #007bff;
+      color: white;
+      font-size: 18px;
+      padding: 15px 40px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
 
-      .btn:active {
-        transform: translateY(2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Manage Your Shop</h1>
+    .btn:hover {
+      background: linear-gradient(135deg, #0056b3);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
 
-    <!-- Buttons with Stylish Design -->
-    <form action="/insert_shop" method="get">
-      <button type="submit" class="btn">Insert Shop</button>
-    </form>
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
 
-    <form action="/upload_ads" method="get">
-      <button type="submit" class="btn">Upload Ads</button>
-    </form>
+<body>
+  <h1>Manage Your Shop</h1>
 
-    <form action="/logout" method="get">
-      <button type="submit" class="btn">Logout</button>
-    </form>
-  </body>
+  <!-- Buttons with Stylish Design -->
+  <form action="/insert_shop" method="get">
+    <button type="submit" class="btn">Insert Shop</button>
+  </form>
+
+  <form action="/upload_ads" method="get">
+    <button type="submit" class="btn">Upload Ads</button>
+  </form>
+
+  <form action="/ad_verify" method="get">
+    <button type="submit" class="btn">Verify Ads</button>
+  </form>
+
+  <form action="/logout" method="get">
+    <button type="submit" class="btn">Logout</button>
+  </form>
+</body>
+
 </html>
