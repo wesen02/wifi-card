@@ -8,6 +8,12 @@ services:
       - '5000'
     volumes:
       - ./app/:/app
+    environment:
+      - DB_NAME
+      - DB_USER
+      - DB_PASS
+      - DB_HOST
+      - DB_PORT
     networks:
       - database_default
 
@@ -17,6 +23,12 @@ services:
     volumes:
       - ./media_converter:/app
       - ./app/static:/app/static
+    environment:
+      - DB_NAME
+      - DB_USER
+      - DB_PASS
+      - DB_HOST
+      - DB_PORT
     networks:
       - database_default
 
@@ -26,6 +38,12 @@ services:
     volumes:
       - ./update_database/main.py:/app/main.py
       - ./media_converter:/app/media_converter
+    environment:
+      - DB_NAME
+      - DB_USER
+      - DB_PASS
+      - DB_HOST
+      - DB_PORT
     networks:
       - database_default
 

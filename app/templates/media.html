@@ -69,7 +69,7 @@
 
       body {
         font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom right, #414c6b, #414c6b);
+        background: linear-gradient(to bottom right, #4e73df, #4e73df);
         height: 100vh;
         display: flex;
         justify-content: center;
@@ -113,7 +113,7 @@
         transform: scale(1.1);
       }
 
-      #showGuideBtn {
+      button {
         margin-top: 20px;
         padding: 10px 20px;
         font-size: 16px;
@@ -125,8 +125,13 @@
         transition: background 0.3s ease;
       }
 
-      #showGuideBtn:hover {
+      /* Specific hover effect */
+      button:hover {
         background: #2c3e50;
+      }
+
+      #copyBtn {
+        font-size: 14px;
       }
 
       #gifContainer {
@@ -206,6 +211,36 @@
         background: rgba(0, 0, 0, 0.7);
         /* Darker on hover */
       }
+
+      .wifi-info {
+        background: #f0f8ff;
+        padding: 20px;
+        border-radius: 8px;
+        display: inline-block;
+        text-align: center;
+        margin: 20px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .wifi-info h2 {
+        color: #333;
+      }
+      .wifi-info p {
+        font-size: 18px;
+        color: #555;
+      }
+      .wifi-info button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+        text-align: center;
+      }
+      .wifi-info button:hover {
+        background: #0056b3;
+      }
     </style>
   </head>
 
@@ -239,6 +274,17 @@
         alt="Wifi QR code"
         style="display: block; margin: 0 auto"
       />
+
+      <button id="alterConnect">Alternative Wi-Fi connection</button>
+      <div id="wifi-info" class="wifi-info" style="display: none">
+        <p><strong>Wi-Fi:</strong> <span id="wifiName"></span></p>
+        <p>
+          <strong>Password:</strong>
+          <span id="wifiPassword"></span>
+        </p>
+        <button id="copyBtn" onclick="copyPassword()">Copy</button>
+      </div>
+
       <!-- Button to show GIF -->
       <button id="showGuideBtn">How to Connect?</button>
       <div id="gifContainer" style="display: none">
@@ -284,10 +330,8 @@
 
       try {
         // Parse JSON
-        let validJsonStr = mediaStr.replace(/'/g, '"');
-        let mediaDict = JSON.parse(validJsonStr);
-
-        console.log('Decoded Media Content:', mediaDict);
+        let mediaJsonStr = mediaStr.replace(/'/g, '"');
+        let mediaDict = JSON.parse(mediaJsonStr);
 
         if (mediaDict) {
           const videoPlayer = document.getElementById('background-video');
@@ -338,6 +382,37 @@
           gifContainer.style.display =
             gifContainer.style.display === 'block' ? 'none' : 'block';
         });
+      document
+        .getElementById('alterConnect')
+        .addEventListener('click', function () {
+          const wifiInfo = document.getElementById('wifi-info');
+          wifiInfo.style.display =
+            wifiInfo.style.display === 'block' ? 'none' : 'block';
+        });
+
+      const wifi_info = '{{wifi_info}}';
+      let wifiParser = new DOMParser();
+      let wifiStr = wifiParser.parseFromString(wifi_info, 'text/html').body
+        .textContent;
+      let wifiJsonStr = wifiStr.replace(/'/g, '"');
+      let wifiDict = JSON.parse(wifiJsonStr);
+
+      document.getElementById('wifiName').textContent =
+        wifiDict.wifi_name || 'N/A';
+      document.getElementById('wifiPassword').textContent =
+        wifiDict.wifi_pass || 'N/A';
+
+      function copyPassword() {
+        const password = document.getElementById('wifiPassword').textContent;
+        navigator.clipboard
+          .writeText(password)
+          .then(() => {
+            alert('Password copied');
+          })
+          .catch((err) => {
+            console.error('Failed to copy password: ', err);
+          });
+      }
     </script>
   </body>
 </html>

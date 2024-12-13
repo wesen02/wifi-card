@@ -39,7 +39,7 @@ inotifywait -m -e create --format "%f" "$WATCH_DIR" | while read -r NEW_FILE; do
             if [ $? -eq 0 ]; then
                 echo "ffmpeg processing succeeded. Replacing the original file with the processed version."
                 mv "$TEMP_FILE" "$FILE_PATH"
-                python3 hash_video.py
+                python3 hash_video.py --file_path "$FILE_PATH"
             else
                 echo "Error: ffmpeg processing failed."
                 rm -f "$TEMP_FILE"
@@ -65,7 +65,7 @@ inotifywait -m -e create --format "%f" "$WATCH_DIR" | while read -r NEW_FILE; do
             if [ $? -eq 0 ]; then
                 echo "Image processing succeeded. Replacing the original file with the processed version."
                 mv "$TEMP_FILE" "$FILE_PATH"
-                python3 hash_video.py
+                python3 hash_video.py --file_path "$FILE_PATH"
             else
                 echo "Error: Image processing failed."
                 rm -f "$TEMP_FILE"

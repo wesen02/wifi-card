@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for
 from qrcode_generator import qr_shop
 import os
-from database import shop_database, ads_db, read_ads_db, ad_info, get_location
+from database import shop_database, ads_db, read_ads_db, ad_info, get_shop_info
 from exposure import exposure_cal
 from register_db import register_database
 from login_db import login_database
@@ -22,7 +22,11 @@ os.makedirs(shop_qr_dir, exist_ok=True)
 
 @app.route('/')
 def home():
-   return render_template('index.html')
+    if 'username' in session:   
+        return render_template('control_panel.html')
+    else:
+        flash("Please log in to access this page.", "warning")
+        return render_template('index.html')
 
 @app.route('/insert_shop')
 def insert_shop():
@@ -68,6 +72,11 @@ def upload_file():
         return jsonify({"error": "No file provided"}), 400
 
     media_file = request.files['media']
+
+    target_state = request.form.get('target_state')
+    target_area = request.form.get('target_area')
+
+    
     if media_file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
@@ -77,8 +86,11 @@ def upload_file():
     if file_extension not in allowed_extensions:
         return jsonify({"error": "Unsupported file type"}), 400
 
+    file_name = media_file.filename.rsplit('.', 1)[0]
+    update_file_name = f"{file_name}@{target_state}@{target_area}.{file_extension}"
+
     # Save the media file
-    media_path = os.path.join(app.config['UPLOAD_FOLDER'], media_file.filename)
+    media_path = os.path.join(app.config['UPLOAD_FOLDER'], update_file_name)
     media_file.save(media_path)
 
     # Extract other form data (excluding the file)
@@ -106,7 +118,10 @@ def get_video(shop_code):
         "media_path": "/static/assets/ads_media/image.png",
         "url_link": "/upload"
     }
-    shop_location = get_location(shop_code)
+    shop_info = get_shop_info(shop_code)
+    shop_location = shop_info["location"]
+    wifi_info = shop_info["wifi_info"]
+
     if shop_location:
         all_ads = read_ads_db(shop_location)
 
@@ -116,7 +131,7 @@ def get_video(shop_code):
             
         media = ad_info(selected_ad, shop_location)
 
-    return media
+    return media, wifi_info
     
 @app.route('/scan')
 def wifi_shop():
@@ -125,7 +140,7 @@ def wifi_shop():
     if not shop_code:
         return "Shop code is missing", 400
     
-    media = get_video(shop_code)
+    media, wifi_info = get_video(shop_code)
 
     # Generate the path to the Wi-Fi QR code image
     wifi_qr = f"/static/assets/wifi_qr/{shop_code}.png"
@@ -146,7 +161,7 @@ def wifi_shop():
         gif_guide = "None"
 
     # Render the HTML template
-    return render_template('media.html', wifi_qr=wifi_qr, user_guide=gif_guide, media=media)
+    return render_template('media.html', wifi_qr=wifi_qr, user_guide=gif_guide, media=media, wifi_info=wifi_info)
 
 @app.route('/register')
 def register():

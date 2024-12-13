@@ -1,12 +1,13 @@
 import hashlib
 import psycopg2
 import os
+import argparse
 
-DB_NAME = "wifi_card"
-DB_USER = "admin"
-DB_PASS = "admin"
-DB_HOST = "db"
-DB_PORT = "5432"
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 
 def rename_file(old_path, new_filename):
     # Extract directory and old filename
@@ -31,7 +32,7 @@ def hash_text(text):
     hashed = hashlib.sha256(text.encode('utf-8')).hexdigest()
     return hashed
 
-def read_ads_db():
+def read_ads_db(target_state, target_area):
     try:
         # Connect to the database
         conn = psycopg2.connect(
@@ -47,7 +48,7 @@ def read_ads_db():
         cursor = conn.cursor()
 
         # Define your SQL query
-        query = "SELECT * FROM ad_campaigns"
+        query = f"SELECT * FROM ad_campaigns_{target_state}_{target_area}"
 
         # Execute the query
         cursor.execute(query)
@@ -70,7 +71,7 @@ def read_ads_db():
 
             new_video_path = os.path.join(directory, video_name)
 
-            update_query = "UPDATE ad_campaigns SET ad_video = %s WHERE id = %s"
+            update_query = f"UPDATE ad_campaigns_{target_state}_{target_area} SET ad_video = %s WHERE id = %s"
             cursor.execute(update_query, (new_video_path, campaign_id))  # Assuming the first column is the ID
         
         conn.commit()
@@ -85,7 +86,26 @@ def read_ads_db():
             conn.close()
 
 def main():
-    read_ads_db()
+    # Create the argument parser
+    parser = argparse.ArgumentParser(description="Insert file path")
+    
+    # Add an argument for the database name (optional)
+    parser.add_argument(
+        '--file_path', 
+        type=str, 
+        help="video file path",
+        required=True
+    )
+    
+    # Parse the arguments
+    args = parser.parse_args()
+
+    file_parts = args.file_path.split("@")
+    print(file_parts)
+    target_state = file_parts[1]
+    target_area = file_parts[2].split(".")[0]
+
+    read_ads_db(target_state, target_area)
 
 if __name__=="__main__":
     main()

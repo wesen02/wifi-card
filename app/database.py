@@ -2,13 +2,12 @@ import psycopg2
 from psycopg2 import OperationalError, DatabaseError
 import hashlib
 import os
-import random
 
-DB_NAME = "wifi_card"
-DB_USER = "admin"
-DB_PASS = "admin"
-DB_HOST = "db"
-DB_PORT = "5432"
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 
 def hash_text(text):
     # Encode the text to bytes, then hash using SHA-256
@@ -287,7 +286,7 @@ def ad_info(selected_ad, shop_location):
             conn.close()
             print("Database connection closed.")
 
-def get_location(shop_code):
+def get_shop_info(shop_code):
     try:
         conn, cursor = connect_db()
 
@@ -301,12 +300,18 @@ def get_location(shop_code):
         ad_data = cursor.fetchone()
 
         if ad_data:
-            location = {
-                "target_state": ad_data[-3],
-                "target_area": ad_data[-2],
+            shop_info = {
+                "location": {
+                    "target_state": ad_data[-3],
+                    "target_area": ad_data[-2],
+                },
+                "wifi_info": {
+                    "wifi_name": ad_data[4],
+                    "wifi_pass": ad_data[5],
+                }
             }
 
-            return location
+            return shop_info
         else:
             return {}
     
